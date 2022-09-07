@@ -1,0 +1,35 @@
+version: '3'
+services:
+  app:
+    container_name: api-go-gin-gorm
+    build: .
+    ports: 
+      - 8080:8080 
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - mysql
+    networks:
+      - network-app
+
+  mysql:
+    image: mysql:8.0.30
+    container_name: db_mysql
+    environment: 
+      - MYSQL_ROOT_HOST=${DB_HOST}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - database_mysql:/var/lib/mysql
+    networks:
+      - network-app
+volumes:
+  api:
+  database_mysql:                  
+
+networks:
+  network-app:
+    driver: bridge
